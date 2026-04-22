@@ -1,0 +1,13 @@
+{
+  "name": "sepm-root",
+  "version": "1.0.0",
+  "description": "Root project running frontend and backend concurrently",
+  "scripts": {
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "npm run dev --prefix backend",
+    "client": "npm run dev --prefix frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
