@@ -463,6 +463,28 @@ const CitizenDashboard = () => {
                   })}
                 </div>
               </div>
+
+              {selectedIssue.status === 'Resolved' && selectedIssue.resolutionPhoto && (
+                <div className="mt-8 border border-[rgba(16,185,129,0.2)] bg-[rgba(16,185,129,0.05)] rounded-xl p-4">
+                  <h4 className="font-semibold text-text-primary mb-4 flex items-center gap-2">✅ Resolution Proof</h4>
+                  <img src={selectedIssue.resolutionPhoto} alt="Resolution Proof" className="w-full rounded-lg mb-4 object-cover max-h-64 border border-theme-border" />
+                  
+                  <div className="text-sm text-text-secondary space-y-2">
+                    <p>Resolved by: <span className="text-text-primary font-medium">{selectedIssue.resolvedBy || 'Worker'}</span></p>
+                    <p>Resolved on: <span className="text-text-primary">{format(new Date(selectedIssue.resolvedAt || selectedIssue.submittedAt), 'MMM dd, yyyy HH:mm')}</span></p>
+                    {selectedIssue.resolutionNotes && (
+                      <div className="mt-3 bg-bg-secondary p-3 rounded-lg border border-theme-border">
+                        <p className="font-medium text-text-primary mb-1">Work Done:</p>
+                        <p className="italic">"{selectedIssue.resolutionNotes}"</p>
+                      </div>
+                    )}
+                    <div className="flex gap-6 mt-4">
+                      <p>Time Taken: <span className="text-text-primary font-medium">{selectedIssue.timeTaken || 'N/A'}</span></p>
+                      <p>Materials: <span className="text-text-primary font-medium">{selectedIssue.materialsUsed || 'N/A'}</span></p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="px-6 py-4 border-t border-theme-border bg-bg-tertiary rounded-b-2xl flex justify-end">

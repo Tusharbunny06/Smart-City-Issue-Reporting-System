@@ -38,13 +38,14 @@ const generateWorkers = () => {
   let idCounter = 1;
   distribution.forEach(({ role, count }) => {
     for (let i = 0; i < count; i++) {
+      const isArjun = idCounter === 1;
       workers.push({
         id: `WRK-${idCounter.toString().padStart(3, '0')}`,
         employeeId: `WRK-${idCounter.toString().padStart(3, '0')}`,
-        name: `${role.split(' ')[0]} Worker ${i + 1}`,
+        name: isArjun ? 'Arjun Selvam' : `${role.split(' ')[0]} Worker ${i + 1}`,
         role,
-        shift: shifts[i % 3],
-        status: 'Available', // Available, Assigned, Off-Duty
+        shift: isArjun ? 'Morning Shift' : shifts[i % 3],
+        status: isArjun ? 'Assigned' : 'Available', // Available, Assigned, Off-Duty
       });
       idCounter++;
     }
@@ -90,6 +91,12 @@ export const initialIssues = [
     citizenName: 'Jane Smith',
     assignedWorker: 'WRK-001', 
     resolutionPhoto: 'https://images.unsplash.com/photo-1541819385542-a42e5c8e39ad?auto=format&fit=crop&q=80&w=400',
+    resolutionNotes: 'Replaced the fused bulb and fixed the wiring. Checked voltage levels.',
+    timeTaken: '1–2 hours',
+    materialsUsed: 'LED Bulb, Wiring tape',
+    resolvedBy: 'Arjun Selvam',
+    resolvedAt: subHours(new Date(), 5).toISOString(),
+    rating: 5,
     history: [
       { status: 'Pending', timestamp: subDays(new Date(), 1).toISOString(), remark: 'Report submitted.' },
       { status: 'Assigned', timestamp: subHours(new Date(), 20).toISOString(), remark: 'Assigned to worker.' },
@@ -110,6 +117,12 @@ export const initialIssues = [
     citizenName: 'Jane Smith',
     assignedWorker: 'WRK-001', 
     resolutionPhoto: 'https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?auto=format&fit=crop&q=80&w=400',
+    resolutionNotes: 'Cleared the overflowing garbage and sanitized the area. Reported the need for an additional bin.',
+    timeTaken: '2–4 hours',
+    materialsUsed: 'Garbage bags, Sanitizer spray',
+    resolvedBy: 'Arjun Selvam',
+    resolvedAt: subHours(new Date(), 5).toISOString(),
+    rating: 4,
     history: [
       { status: 'Pending', timestamp: subDays(new Date(), 2).toISOString(), remark: 'Report submitted.' },
       { status: 'Assigned', timestamp: subDays(new Date(), 1).toISOString(), remark: 'Assigned to worker.' },

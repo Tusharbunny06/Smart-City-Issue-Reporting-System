@@ -117,6 +117,13 @@ const Chatbot = () => {
         ⏱️ ETA: ${etaStr}
       </div>`;
     }
+    let resolutionHtml = '';
+    if (issue.status === 'Resolved' && issue.resolutionPhoto) {
+      const w = workers.find(work => work.id === issue.assignedWorker) || { name: issue.resolvedBy || 'Worker' };
+      resolutionHtml = `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #2A3347; font-size: 11px; color: #10B981;">
+        📸 Resolution photo uploaded by ${w.name}. Open 'My Reports' to view the proof.
+      </div>`;
+    }
 
     return `
       <div style="background: #1C2333; border: 1px solid #2A3347; border-left: 3px solid ${getStatusColor(issue.status)}; border-radius: 8px; padding: 12px; margin-bottom: 4px;">
@@ -130,6 +137,7 @@ const Chatbot = () => {
           Assigned to: <span style="color: #F1F5F9;">${assignedInfo}</span>
         </div>
         ${etaHtml}
+        ${resolutionHtml}
       </div>
     `;
   };

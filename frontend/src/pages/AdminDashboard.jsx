@@ -293,19 +293,38 @@ const AdminDashboard = () => {
                     <th className="table-th">Name</th>
                     <th className="table-th">Role (Department)</th>
                     <th className="table-th">Shift</th>
+                    <th className="table-th">Current Task</th>
                     <th className="table-th">Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-theme-border">
-                  {workers.map(worker => (
-                    <tr key={worker.id} className="hover:bg-bg-tertiary transition-colors">
-                      <td className="px-6 py-4 font-medium text-text-primary text-sm">{worker.id}</td>
-                      <td className="px-6 py-4 text-text-secondary text-sm">{worker.name}</td>
-                      <td className="px-6 py-4 text-text-secondary text-sm">{worker.role}</td>
-                      <td className="px-6 py-4 text-text-secondary text-sm">{worker.shift}</td>
-                      <td className="px-6 py-4"><Badge status={worker.status} /></td>
-                    </tr>
-                  ))}
+                  {workers.map(worker => {
+                    const activeTask = issues.find(i => (i.assignedWorker === worker.id || i.assignedWorker === worker.employeeId) && ['Assigned', 'Accepted', 'In Progress', 'On Hold'].includes(i.status));
+                    const isOffShift = worker.status === 'Off-Duty';
+                    let workerStatus = worker.status;
+                    if (isOffShift) workerStatus = 'Off-Duty';
+                    else if (activeTask) workerStatus = 'On Task';
+                    
+                    return (
+                      <tr key={worker.id} className="hover:bg-bg-tertiary transition-colors">
+                        <td className="px-6 py-4 font-medium text-text-primary text-sm">{worker.id}</td>
+                        <td className="px-6 py-4 text-text-secondary text-sm">{worker.name}</td>
+                        <td className="px-6 py-4 text-text-secondary text-sm">{worker.role}</td>
+                        <td className="px-6 py-4 text-text-secondary text-sm">{worker.shift}</td>
+                        <td className="px-6 py-4 text-text-secondary text-sm">{activeTask ? <span className="text-accent font-medium">{activeTask.id}</span> : 'Available'}</td>
+                        <td className="px-6 py-4">
+                          <span className={`px-2 py-1 text-xs rounded-full font-bold ${
+                            workerStatus === 'Off-Duty' ? 'bg-bg-tertiary text-text-muted border border-theme-border' :
+                            workerStatus === 'On Task' ? 'bg-[rgba(59,130,246,0.15)] text-info border border-[rgba(59,130,246,0.3)]' :
+                            workerStatus === 'Assigned' ? 'bg-[rgba(59,130,246,0.15)] text-info border border-[rgba(59,130,246,0.3)]' :
+                            'bg-[rgba(16,185,129,0.15)] text-success border border-[rgba(16,185,129,0.3)]'
+                          }`}>
+                            {workerStatus === 'Assigned' ? 'On Task' : workerStatus}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -367,6 +386,28 @@ const AdminDashboard = () => {
                 <span className="form-label">Description</span>
                 <p className="text-text-secondary text-sm leading-relaxed">{selectedIssue.description}</p>
               </div>
+
+              {selectedIssue.status === 'Resolved' && selectedIssue.resolutionPhoto && (
+                <div className="border border-[rgba(16,185,129,0.2)] bg-[rgba(16,185,129,0.05)] rounded-xl p-4">
+                  <h4 className="font-semibold text-text-primary mb-4 flex items-center gap-2">✅ Resolution Proof</h4>
+                  <img src={selectedIssue.resolutionPhoto} alt="Resolution Proof" className="w-full rounded-lg mb-4 object-cover max-h-48 border border-theme-border" />
+                  
+                  <div className="text-sm text-text-secondary space-y-2">
+                    <p>Resolved by: <span className="text-text-primary font-medium">{selectedIssue.resolvedBy || 'Worker'}</span></p>
+                    <p>Resolved on: <span className="text-text-primary">{format(new Date(selectedIssue.resolvedAt || selectedIssue.submittedAt), 'MMM dd, yyyy HH:mm')}</span></p>
+                    {selectedIssue.resolutionNotes && (
+                      <div className="mt-3 bg-bg-secondary p-3 rounded-lg border border-theme-border">
+                        <p className="font-medium text-text-primary mb-1">Work Done:</p>
+                        <p className="italic">"{selectedIssue.resolutionNotes}"</p>
+                      </div>
+                    )}
+                    <div className="flex gap-6 mt-4">
+                      <p>Time Taken: <span className="text-text-primary font-medium">{selectedIssue.timeTaken || 'N/A'}</span></p>
+                      <p>Materials: <span className="text-text-primary font-medium">{selectedIssue.materialsUsed || 'N/A'}</span></p>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Status Update Form */}
               <div className="border-t border-theme-border pt-6">
